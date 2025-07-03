@@ -86,3 +86,33 @@ except Exception as e:
 # MNIST labels are just the digits 0-9
 mnist_labels = [str(i) for i in range(10)]
 
+# --- 5. Prediction Function ---
+def get_prediction(model_name, image_bytes):
+    """
+    Takes a model name and image bytes, returns the top prediction.
+    """
+    try:
+        model = pretrained_models[model_name]
+        image = Image.open(io.BytesIO(image_bytes))
+
+        if model_name in ["resnet18", "mobilenet_v2"]:
+            # Ensure image is RGB for ImageNet models
+            if image.mode != "RGB":
+                image = image.convert("RGB")
+            tensor = imagenet_transform(image).unsqueeze(0)
+            labels = imagenet_class_index
+        elif model_name == "mnist_cnn":
+            tensor = mnist_transform(image).unsqueeze(0)
+            labels = mnist_labels
+        else:
+            return "Unknown model"
+
+        with torch.no_grad():
+            output = model(tensor)
+            _, predicted_idx = torch.max(output, 1)
+            prediction = labels[predicted_idx.item()]
+            return prediction.replace("_", " ").title()
+
+    except Exception as e:
+        print(f"Error during prediction: {e}")
+        return "Error making prediction"
