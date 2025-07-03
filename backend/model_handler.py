@@ -15,7 +15,7 @@ import json
 print("Loading pre-trained models...")
 pretrained_models = {
     "resnet18": models.resnet18(weights=models.ResNet18_Weights.DEFAULT),
-    "mobilenet_v2": models.mobilenet_v2(weights=models.MobileNetV2_Weights.DEFAULT)
+    "mobilenet_v2": models.mobilenet_v2(weights=models.MobileNet_V2_Weights.DEFAULT)
 }
 for model in pretrained_models.values():
     model.eval()
@@ -88,9 +88,7 @@ mnist_labels = [str(i) for i in range(10)]
 
 # --- 5. Prediction Function ---
 def get_prediction(model_name, image_bytes):
-    """
-    Takes a model name and image bytes, returns the top prediction.
-    """
+
     try:
         model = pretrained_models[model_name]
         image = Image.open(io.BytesIO(image_bytes))
