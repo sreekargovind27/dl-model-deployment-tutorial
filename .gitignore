@@ -1,21 +1,11 @@
 # Python
 __pycache__/
 *.pyc
-*.pyo
-*.pyd
-.Python
-env/
-venv/
 .venv/
-pip-log.txt
-pip-delete-this-directory.txt
-.eggs/
-*.egg-info/
 dist/
 build/
-*.so
-*.log
-*.sqlite3
+*.egg-info/
+data/ # Ignore the downloaded MNIST dataset
 
 # VS Code
 .vscode/
@@ -23,22 +13,7 @@ build/
 # Node
 node_modules/
 npm-debug.log
-yarn-error.log
-pnpm-debug.log
-build/
-dist/
 .npm
-.yarn
-
-# Datasets & Models (we will handle these carefully)
-# If you have very large model files, you should use Git LFS, but for now, we'll ignore common data folders
-data/
-models/
-*.pth
-*.pt
-
-# Heroku
-.heroku/
 
 # Other
 .DS_Store
