@@ -1,0 +1,14 @@
+[project]
+name = "dl-model-deployment-tutorial"
+version = "0.1.0"
+description = "A tutorial for deploying PyTorch models with Flask, React, and Heroku."
+authors = [
+    {name = "Your Name", email = "youremail@example.com"},
+]
+requires-python = ">=3.9"
+dependencies = [
+    # We will fill this in later
+]
+
+[project.urls]
+Homepage = "https://github.com/<YourUsername>/dl-model-deployment-tutorial"
