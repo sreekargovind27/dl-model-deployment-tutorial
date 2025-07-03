@@ -1,14 +1,24 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "dl-model-deployment-tutorial"
 version = "0.1.0"
-description = "A tutorial for deploying PyTorch models with Flask, React, and Heroku."
+description = "A tutorial for deploying PyTorch models with Flask, React, and Render."
 authors = [
-    {name = "Your Name", email = "youremail@example.com"},
+    {name = "Govind Sreekar Garimella", email = "govindsreekar27@gmail.com"},
 ]
 requires-python = ">=3.9"
 dependencies = [
-    # We will fill this in later
+    "Flask==3.0.3",
+    "flask-cors==4.0.1",
+    "Pillow==10.3.0",
+    "requests==2.32.3",
+    "torch==2.3.0",
+    "torchvision==0.18.0",
+    "gunicorn==22.0.0",
 ]
 
 [project.urls]
-Homepage = "https://github.com/<YourUsername>/dl-model-deployment-tutorial"
+Homepage = "https://github.com/sreekargovind27/dl-model-deployment-tutorial"
