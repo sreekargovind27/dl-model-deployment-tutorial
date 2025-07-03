@@ -68,3 +68,21 @@ mnist_transform = transforms.Compose([
     transforms.Normalize((0.1307,), (0.3081,)),
 ])
 
+# --- 4. Load Labels ---
+# ImageNet labels
+# Dataset link: https://s3.amazonaws.com/deep-learning-models/image-models/imagenet_class_index.json
+# We'll download this file in our app startup
+imagenet_class_index = None
+try:
+    import requests
+    response = requests.get("https://s3.amazonaws.com/deep-learning-models/image-models/imagenet_class_index.json")
+    data = response.json()
+    imagenet_class_index = {int(k): v[1] for k, v in data.items()}
+    print("ImageNet labels loaded.")
+except Exception as e:
+    print(f"Could not load ImageNet labels: {e}")
+
+
+# MNIST labels are just the digits 0-9
+mnist_labels = [str(i) for i in range(10)]
+
