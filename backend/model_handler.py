@@ -31,6 +31,7 @@ class MNIST_CNN(nn.Module):
         self.conv2 = nn.Conv2d(10, 20, kernel_size=5)
         self.conv2_drop = nn.Dropout2d()
         self.fc1 = nn.Linear(320, 50)
+        self.fc_drop = nn.Dropout()
         self.fc2 = nn.Linear(50, 10)
 
     def forward(self, x):
@@ -38,20 +39,30 @@ class MNIST_CNN(nn.Module):
         x = torch.relu(torch.max_pool2d(self.conv2_drop(self.conv2(x)), 2))
         x = x.view(-1, 320)
         x = torch.relu(self.fc1(x))
-        x = torch.dropout(x, training=self.training)
+        x = self.fc_drop(x)
         x = self.fc2(x)
         return torch.log_softmax(x, dim=1)
 
-    
-print("Loading MNIST model...")
-mnist_model = MNIST_CNN()
-mnist_model.eval()
-print("MNIST model loaded.")
+# Model Loading
+print("Loading MNIST model with trained weights...")
 
-# Add the MNIST model to our dictionary
+# Path to the trained model weights file created by train_mnist.py
+MODEL_PATH = "models/mnist_cnn.pth"
+
+# Initialize the model structure
+mnist_model = MNIST_CNN()
+
+mnist_model.load_state_dict(torch.load(MODEL_PATH, map_location=torch.device('cpu')))
+
+#setting model to evaluation mode
+mnist_model.eval() 
+print("MNIST model loaded successfully.")
+
+#addinig mnist model to the dictionary
 pretrained_models["mnist_cnn"] = mnist_model
 
 # 3. Image Transformations 
+
 # ImageNet models expect 3-channel (RGB) 224x224 images
 imagenet_transform = transforms.Compose([
     transforms.Resize(256),
