@@ -1,0 +1,105 @@
+/* frontend/src/App.css */
+:root {
+  --primary-color: #282c34;
+  --secondary-color: #61dafb;
+  --text-color: #ffffff;
+  --bg-color: #20232a;
+}
+
+.App {
+  text-align: center;
+  background-color: var(--bg-color);
+  min-height: 100vh;
+  color: var(--text-color);
+}
+
+.App-header {
+  background-color: var(--primary-color);
+  padding: 20px;
+  color: white;
+  margin-bottom: 2rem;
+}
+
+.App-header h1 {
+  margin: 0;
+  color: var(--secondary-color);
+}
+
+main {
+  padding: 0 2rem;
+}
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background-color: var(--primary-color);
+  border-radius: 8px;
+}
+
+.select-model, .upload-form {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+label {
+  font-size: 1.1rem;
+}
+
+select, input[type="file"], button {
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  border: 1px solid var(--secondary-color);
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+button {
+  background-color: var(--secondary-color);
+  color: var(--primary-color);
+  font-weight: bold;
+  transition: transform 0.2s;
+}
+
+button:hover:not(:disabled) {
+  transform: scale(1.05);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.results {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.image-preview img {
+  max-width: 300px;
+  max-height: 300px;
+  border: 2px solid var(--secondary-color);
+  border-radius: 8px;
+}
+
+.prediction-result p {
+  font-size: 2rem;
+  font-weight: bold;
+  color: var(--secondary-color);
+  background-color: var(--primary-color);
+  padding: 1rem 2rem;
+  border-radius: 8px;
+}
+
+.error {
+  color: #ff6b6b;
+  font-weight: bold;
+}
