@@ -21,3 +21,50 @@ for model in pretrained_models.values():
     model.eval()
 print("Pre-trained models loaded.")
 
+# --- 2. Define and Load Custom MNIST Model ---
+
+# Define the same simple CNN structure used for training
+class MNIST_CNN(nn.Module):
+    def __init__(self):
+        super(MNIST_CNN, self).__init__()
+        self.conv1 = nn.Conv2d(1, 10, kernel_size=5)
+        self.conv2 = nn.Conv2d(10, 20, kernel_size=5)
+        self.conv2_drop = nn.Dropout2d()
+        self.fc1 = nn.Linear(320, 50)
+        self.fc2 = nn.Linear(50, 10)
+
+    def forward(self, x):
+        x = torch.relu(torch.max_pool2d(self.conv1(x), 2))
+        x = torch.relu(torch.max_pool2d(self.conv2_drop(self.conv2(x)), 2))
+        x = x.view(-1, 320)
+        x = torch.relu(self.fc1(x))
+        x = torch.dropout(x, training=self.training)
+        x = self.fc2(x)
+        return torch.log_softmax(x, dim=1)
+
+    
+print("Loading MNIST model...")
+mnist_model = MNIST_CNN()
+mnist_model.eval()
+print("MNIST model loaded.")
+
+# Add the MNIST model to our dictionary
+pretrained_models["mnist_cnn"] = mnist_model
+
+# --- 3. Image Transformations ---
+# ImageNet models expect 3-channel (RGB) 224x224 images
+imagenet_transform = transforms.Compose([
+    transforms.Resize(256),
+    transforms.CenterCrop(224),
+    transforms.ToTensor(),
+    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+])
+
+# MNIST model expects 1-channel (grayscale) 28x28 images
+mnist_transform = transforms.Compose([
+    transforms.Grayscale(num_output_channels=1),
+    transforms.Resize((28, 28)),
+    transforms.ToTensor(),
+    transforms.Normalize((0.1307,), (0.3081,)),
+])
+
