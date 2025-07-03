@@ -8,7 +8,7 @@ from PIL import Image
 import io
 import json
 
-# --- 1. Load Pre-trained Models ---
+# Load Pre-trained Models 
 # Load models and set to evaluation mode
 
 # We use a dictionary to easily access them by name
@@ -21,7 +21,7 @@ for model in pretrained_models.values():
     model.eval()
 print("Pre-trained models loaded.")
 
-# --- 2. Define and Load Custom MNIST Model ---
+# 2. Define and Load Custom MNIST Model 
 
 # Define the same simple CNN structure used for training
 class MNIST_CNN(nn.Module):
@@ -51,7 +51,7 @@ print("MNIST model loaded.")
 # Add the MNIST model to our dictionary
 pretrained_models["mnist_cnn"] = mnist_model
 
-# --- 3. Image Transformations ---
+# 3. Image Transformations 
 # ImageNet models expect 3-channel (RGB) 224x224 images
 imagenet_transform = transforms.Compose([
     transforms.Resize(256),
@@ -68,10 +68,12 @@ mnist_transform = transforms.Compose([
     transforms.Normalize((0.1307,), (0.3081,)),
 ])
 
-# --- 4. Load Labels ---
-# ImageNet labels
-# Dataset link: https://s3.amazonaws.com/deep-learning-models/image-models/imagenet_class_index.json
-# We'll download this file in our app startup
+''' 
+Load Labels 
+ImageNet labels
+We'll download this file in our app startup
+'''
+
 imagenet_class_index = None
 try:
     import requests
@@ -86,7 +88,7 @@ except Exception as e:
 # MNIST labels are just the digits 0-9
 mnist_labels = [str(i) for i in range(10)]
 
-# --- 5. Prediction Function ---
+# 5. Prediction Function 
 def get_prediction(model_name, image_bytes):
 
     try:

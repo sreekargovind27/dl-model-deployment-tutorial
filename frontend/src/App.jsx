@@ -39,7 +39,6 @@ function App() {
 
     try {
       // The API endpoint is proxied by Vite during development
-      // In production, it will be served from the same origin
       const response = await axios.post('/api/predict', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
