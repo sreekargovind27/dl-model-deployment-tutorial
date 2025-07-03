@@ -3,8 +3,7 @@ from flask_cors import CORS
 import os
 from model_handler import get_prediction
 
-app = Flask(__name__, static_folder='../frontend/build', static_url_path='/')
-CORS(app)
+app = Flask(__name__, static_folder='../frontend/dist', static_url_path='/')CORS(app)
 
 @app.route('/api/predict', methods=['POST'])
 def predict():
