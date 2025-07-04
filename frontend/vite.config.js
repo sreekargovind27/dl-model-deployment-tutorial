@@ -1,12 +1,12 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
+  // Add this 'base' option for correct asset paths
+  base: './',
   server: {
     proxy: {
-      // Proxy /api requests to our Flask backend
       '/api': {
         target: 'http://127.0.0.1:5001',
         changeOrigin: true,

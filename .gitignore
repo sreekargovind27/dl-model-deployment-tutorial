@@ -2,10 +2,9 @@
 __pycache__/
 *.pyc
 .venv/
-/dist/
 build/
 *.egg-info/
-data/ # Ignore the downloaded MNIST dataset
+data/
 
 # VS Code
 .vscode/
@@ -14,6 +13,8 @@ data/ # Ignore the downloaded MNIST dataset
 node_modules/
 npm-debug.log
 .npm
+dist-ssr
+*.local
 
 # Other
 .DS_Store
