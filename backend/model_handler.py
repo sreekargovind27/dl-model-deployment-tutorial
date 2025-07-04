@@ -47,7 +47,7 @@ class MNIST_CNN(nn.Module):
 print("Loading MNIST model with trained weights...")
 
 # Path to the trained model weights file created by train_mnist.py
-MODEL_PATH = "models/mnist_cnn.pth"
+MODEL_PATH = "../models/mnist_cnn.pth"
 
 # Initialize the model structure
 mnist_model = MNIST_CNN()
