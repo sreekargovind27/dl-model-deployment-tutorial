@@ -7,23 +7,13 @@ import torch.nn as nn
 from PIL import Image
 import io
 import json
+import requests
 
-# Load Pre-trained Models 
-# Load models and set to evaluation mode
+#1.Define Model Loading Instructions 
 
-# We use a dictionary to easily access them by name
-print("Loading pre-trained models...")
-pretrained_models = {
-    "resnet18": models.resnet18(weights=models.ResNet18_Weights.DEFAULT),
-    "mobilenet_v2": models.mobilenet_v2(weights=models.MobileNet_V2_Weights.DEFAULT)
-}
-for model in pretrained_models.values():
-    model.eval()
-print("Pre-trained models loaded.")
+print("Defining model loading instructions...")
 
-# 2. Define and Load Custom MNIST Model 
-
-# Define the same simple CNN structure used for training
+# Define the MNIST CNN class here so the loader functions can access it
 class MNIST_CNN(nn.Module):
     def __init__(self):
         super(MNIST_CNN, self).__init__()
@@ -43,35 +33,30 @@ class MNIST_CNN(nn.Module):
         x = self.fc2(x)
         return torch.log_softmax(x, dim=1)
 
-# Model Loading
-print("Loading MNIST model with trained weights...")
+# Function to load the trained MNIST model
+def load_mnist_model():
+    model = MNIST_CNN()
+    model.load_state_dict(torch.load("../models/mnist_cnn.pth", map_location=torch.device('cpu')))
+    return model
 
-# Path to the trained model weights file created by train_mnist.py
-MODEL_PATH = "../models/mnist_cnn.pth"
+model_loaders = {
+    "resnet18": lambda: models.resnet18(weights=models.ResNet18_Weights.DEFAULT),
+    "mobilenet_v2": lambda: models.mobilenet_v2(weights=models.MobileNet_V2_Weights.DEFAULT),
+    "mnist_cnn": load_mnist_model
+}
 
-# Initialize the model structure
-mnist_model = MNIST_CNN()
+# This dictionary will act as a cache for models once they are loaded
+loaded_models = {}
+print("Model loaders are ready.")
 
-mnist_model.load_state_dict(torch.load(MODEL_PATH, map_location=torch.device('cpu')))
 
-#setting model to evaluation mode
-mnist_model.eval() 
-print("MNIST model loaded successfully.")
-
-#addinig mnist model to the dictionary
-pretrained_models["mnist_cnn"] = mnist_model
-
-# 3. Image Transformations 
-
-# ImageNet models expect 3-channel (RGB) 224x224 images
+#2. Image Transformations 
 imagenet_transform = transforms.Compose([
     transforms.Resize(256),
     transforms.CenterCrop(224),
     transforms.ToTensor(),
     transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
 ])
-
-# MNIST model expects 1-channel (grayscale) 28x28 images
 mnist_transform = transforms.Compose([
     transforms.Grayscale(num_output_channels=1),
     transforms.Resize((28, 28)),
@@ -79,15 +64,10 @@ mnist_transform = transforms.Compose([
     transforms.Normalize((0.1307,), (0.3081,)),
 ])
 
-''' 
-Load Labels 
-ImageNet labels
-We'll download this file in our app startup
-'''
 
+#3. Load Labels 
 imagenet_class_index = None
 try:
-    import requests
     response = requests.get("https://s3.amazonaws.com/deep-learning-models/image-models/imagenet_class_index.json")
     data = response.json()
     imagenet_class_index = {int(k): v[1] for k, v in data.items()}
@@ -95,19 +75,29 @@ try:
 except Exception as e:
     print(f"Could not load ImageNet labels: {e}")
 
-
-# MNIST labels are just the digits 0-9
 mnist_labels = [str(i) for i in range(10)]
 
-# 5. Prediction Function 
-def get_prediction(model_name, image_bytes):
 
+#4. Prediction Function 
+def get_prediction(model_name, image_bytes):
     try:
-        model = pretrained_models[model_name]
+        # Check if the model is already loaded in our cache
+        if model_name not in loaded_models:
+            print(f"Loading model '{model_name}' for the first time...")
+            # If not, call the loader function to load it
+            model = model_loaders[model_name]()
+            model.eval()
+            # Store the loaded model in the cache for future requests
+            loaded_models[model_name] = model
+            print(f"Model '{model_name}' loaded and cached.")
+        
+        # Get the model from the cache
+        model = loaded_models[model_name]
+        
+        # The rest of the prediction logic is the same
         image = Image.open(io.BytesIO(image_bytes))
 
         if model_name in ["resnet18", "mobilenet_v2"]:
-            # Ensure image is RGB for ImageNet models
             if image.mode != "RGB":
                 image = image.convert("RGB")
             tensor = imagenet_transform(image).unsqueeze(0)
