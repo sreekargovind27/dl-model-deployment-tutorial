@@ -2,11 +2,13 @@
 
 import torch
 import torchvision.transforms as transforms
+from torchvision.transforms.functional import invert
 from torchvision import models
 import torch.nn as nn
 from PIL import Image
 import io
 import json
+import os 
 import requests
 
 #1.Define Model Loading Instructions 
@@ -33,10 +35,14 @@ class MNIST_CNN(nn.Module):
         x = self.fc2(x)
         return torch.log_softmax(x, dim=1)
 
-# Function to load the trained MNIST model
 def load_mnist_model():
     model = MNIST_CNN()
-    model.load_state_dict(torch.load("../models/mnist_cnn.pth", map_location=torch.device('cpu')))
+    
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    model_path = os.path.join(dir_path, '..', 'models', 'mnist_cnn.pth')
+    
+    # Load the model using the new, absolute path
+    model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))
     return model
 
 model_loaders = {
@@ -57,23 +63,30 @@ imagenet_transform = transforms.Compose([
     transforms.ToTensor(),
     transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
 ])
+
 mnist_transform = transforms.Compose([
+    transforms.Lambda(invert),
     transforms.Grayscale(num_output_channels=1),
     transforms.Resize((28, 28)),
     transforms.ToTensor(),
     transforms.Normalize((0.1307,), (0.3081,)),
 ])
 
-
 #3. Load Labels 
 imagenet_class_index = None
 try:
-    response = requests.get("https://s3.amazonaws.com/deep-learning-models/image-models/imagenet_class_index.json")
-    data = response.json()
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    
+    file_path = os.path.join(dir_path, 'data', 'imagenet_class_index.json')
+    
+    with open(file_path, 'r') as f:
+        data = json.load(f)
+    
     imagenet_class_index = {int(k): v[1] for k, v in data.items()}
-    print("ImageNet labels loaded.")
+    print("ImageNet labels loaded from local file.")
+
 except Exception as e:
-    print(f"Could not load ImageNet labels: {e}")
+    print(f"Could not load ImageNet labels from {file_path}: {e}")
 
 mnist_labels = [str(i) for i in range(10)]
 
@@ -81,13 +94,10 @@ mnist_labels = [str(i) for i in range(10)]
 #4. Prediction Function 
 def get_prediction(model_name, image_bytes):
     try:
-        # Check if the model is already loaded in our cache
         if model_name not in loaded_models:
             print(f"Loading model '{model_name}' for the first time...")
-            # If not, call the loader function to load it
             model = model_loaders[model_name]()
             model.eval()
-            # Store the loaded model in the cache for future requests
             loaded_models[model_name] = model
             print(f"Model '{model_name}' loaded and cached.")
         
@@ -103,6 +113,8 @@ def get_prediction(model_name, image_bytes):
             tensor = imagenet_transform(image).unsqueeze(0)
             labels = imagenet_class_index
         elif model_name == "mnist_cnn":
+            if image.mode != "RGB":
+                image = image.convert("RGB")
             tensor = mnist_transform(image).unsqueeze(0)
             labels = mnist_labels
         else:

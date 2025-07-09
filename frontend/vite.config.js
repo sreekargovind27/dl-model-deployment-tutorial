@@ -1,10 +1,10 @@
+// frontend/vite.config.js (Corrected)
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
-  // Add this 'base' option for correct asset paths
-  base: './',
+  // base: '/', // Or just remove the line entirely, as '/' is the default
   server: {
     proxy: {
       '/api': {

@@ -1,23 +1,10 @@
-/* frontend/src/App.css */
-:root {
-  --primary-color: #282c34;
-  --secondary-color: #61dafb;
-  --text-color: #ffffff;
-  --bg-color: #20232a;
-}
-
 .App {
   text-align: center;
-  background-color: var(--bg-color);
   min-height: 100vh;
-  color: var(--text-color);
 }
 
 .App-header {
-  background-color: var(--primary-color);
-  padding: 20px;
-  color: white;
-  margin-bottom: 2rem;
+   /* ... */
 }
 
 .App-header h1 {
