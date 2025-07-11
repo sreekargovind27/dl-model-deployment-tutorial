@@ -57,7 +57,7 @@ function App() {
     <div className="App">
       <header className="App-header">
         <h1>Deep Learning Model Deployment</h1>
-        <p>Deploying PyTorch models with Flask, React & Heroku</p>
+        <p>Deploying PyTorch models with Flask, React & Render</p>
       </header>
       <main>
         <div className="controls">

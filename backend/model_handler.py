@@ -65,7 +65,6 @@ imagenet_transform = transforms.Compose([
 ])
 
 mnist_transform = transforms.Compose([
-    transforms.Lambda(invert),
     transforms.Grayscale(num_output_channels=1),
     transforms.Resize((28, 28)),
     transforms.ToTensor(),
@@ -77,7 +76,7 @@ imagenet_class_index = None
 try:
     dir_path = os.path.dirname(os.path.realpath(__file__))
     
-    file_path = os.path.join(dir_path, 'data', 'imagenet_class_index.json')
+    file_path = os.path.join(dir_path, 'data_imagenet', 'imagenet_class_index.json')
     
     with open(file_path, 'r') as f:
         data = json.load(f)
