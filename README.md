@@ -99,18 +99,34 @@ This project is configured for easy deployment on Render.
 
 ## Project Structure
 .
+
 ├── backend/
-│ ├── data/ # MNIST dataset
-│ ├── data_imagenet/ # ImageNet labels
-│ ├── models/ # Saved .pth model files
-│ ├── app.py # Flask application
-│ └── model_handler.py # Model loading and prediction logic
+
+│ ├── data/ #mnist-dataset
+
+│ ├── data_imagenet/ #imagenet-lables
+
+│ ├── models/ #saved .pth file
+
+│ ├── app.py #flask application
+
+│ └── model_handler.py #model backend
+
 │
+
 ├── frontend/
+
 │ ├── public/
-│ └── src/ # React components and source code
+
+│ └── src/ #react components and source code
+
 │
+
 ├── .gitignore
-├── build.sh # Build script for Render
+
+├── build.sh #a script for render
+
 ├── README.md
-└── requirements.txt # Python dependencies
+
+└── requirements.txt
+
