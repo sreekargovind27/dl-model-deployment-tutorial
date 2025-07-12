@@ -1,39 +1,39 @@
-# Full-Stack Deep Learning Model Deployment
+# Deep Learning Model Deployment Tutorial
 
-A comprehensive, end-to-end tutorial on deploying multiple PyTorch models as a full-stack web application. This project uses a Python/Flask backend, a React/Vite frontend, and is deployed as a monolithic service on Render.
+A full-stack application demonstrating how to deploy multiple PyTorch models (MNIST CNN, ResNet18, MobileNetV2) using a Flask backend and a React frontend, deployed on Render.
 
----
+### [➡️ Live Demo ⬅️](https://dl-model-deployment-tutorial.onrender.com)
+
+## Overview
+
+This project serves as a comprehensive, hands-on tutorial for deploying deep learning models as a web service. It covers the entire workflow from a trained model to a publicly accessible web application. The backend is built with Python and Flask, serving a REST API for predictions. The frontend is a modern, responsive interface built with React and Vite.
 
 ## Features
 
--   **Multi-Model Inference**: Serves three distinct PyTorch models (ResNet18, MobileNetV2, and a custom MNIST CNN).
--   **Interactive UI**: A clean user interface built with React allows users to select a model, upload an image, and view the prediction.
--   **Memory-Efficient Backend**: Implements a **lazy loading** pattern to load models on-demand, making it suitable for resource-constrained environments like Render's free tier.
--   **Monolithic Deployment**: A simple and effective deployment strategy where the Flask server is responsible for both the API and serving the static React frontend.
--   **Modern Tooling**: Utilizes `uv` for fast Python package management and `Vite` for a modern, efficient frontend build process.
+-   **Multiple Model Support:** Choose between three different PyTorch models for inference.
+-   **Image Upload:** Users can upload their own images for classification.
+-   **Real-time Predictions:** Get instant predictions from the selected deep learning model.
+-   **Image Preview:** Displays the uploaded image alongside the model's prediction.
+-   **Responsive Design:** A clean and modern UI that works on both desktop and mobile.
+-   **Production-Ready:** Includes a production-grade Gunicorn server and a complete deployment guide for Render.
 
-## Technology Stack
+## Tech Stack
 
--   **Backend**: Python, Flask, Gunicorn
--   **Machine Learning**: PyTorch, Torchvision
--   **Frontend**: React.js, Vite, Axios
--   **Deployment**: Render, Git
--   **Environment**: WSL (Ubuntu), `uv`
+-   **Frontend:** React, Vite, CSS
+-   **Backend:** Python, Flask, PyTorch, Gunicorn
+-   **Deployment:** Render
 
----
+## Local Development Setup
 
-## Getting Started: Local Development
-
-Follow these instructions to get a copy of the project up and running on your local machine for development and testing.
+To run this project on your local machine, follow these steps.
 
 ### Prerequisites
 
 -   [Git](https://git-scm.com/)
--   [Python 3.9+](https://www.python.org/)
--   [Node.js (LTS)](https://nodejs.org/) (we recommend using `nvm`)
--   [uv](https://github.com/astral-sh/uv) (`pip install uv`)
+-   [Python](https://www.python.org/downloads/) (3.8 or higher)
+-   [Node.js](https://nodejs.org/en/) and npm
 
-### Installation and Setup
+### Installation & Running
 
 1.  **Clone the repository:**
     ```bash
@@ -41,102 +41,92 @@ Follow these instructions to get a copy of the project up and running on your lo
     cd dl-model-deployment-tutorial
     ```
 
-2.  **Set up the Python Environment:**
+2.  **Setup the Backend:**
     ```bash
-    # Create a virtual environment
-    uv venv
+    # Navigate to the backend directory
+    cd backend
 
-    # Activate the environment
-    source .venv/bin/activate
+    # Create and activate a virtual environment
+    python -m venv venv
+    # On Windows:
+    # venv\Scripts\activate
+    # On macOS/Linux:
+    # source venv/bin/activate
 
-    # Install all Python dependencies from pyproject.toml
-    uv pip install -e .
+    # Install Python dependencies
+    pip install -r requirements.txt
     ```
 
-3.  **Train the Custom MNIST Model:**
-    This is a one-time step to generate the `models/mnist_cnn.pth` file.
+3.  **Setup the Frontend:**
     ```bash
-    python train_mnist.py
-    ```
+    # Navigate to the frontend directory from the root
+    cd ../frontend
 
-4.  **Set up the Frontend:**
-    ```bash
-    cd frontend
+    # Install Node.js dependencies
     npm install
-    cd ..
     ```
 
-### Running the Application Locally
+4.  **Run the Application:**
+    You will need two separate terminals to run both the backend and frontend servers.
 
-You will need to run the backend and frontend servers in two separate terminals.
+    -   **Terminal 1: Start the Backend (Flask) Server**
+        ```bash
+        cd backend
+        # (Make sure your virtual environment is activated)
+        flask run --port 5001
+        ```
+        The backend will be running at `http://127.0.0.1:5001`.
 
-1.  **Run the Flask Backend Server (Terminal 1):**
-    ```bash
-    # Make sure your virtual environment is active
-    source .venv/bin/activate
-    python backend/app.py
-    ```
-    The backend will be running at `http://127.0.0.1:5001`.
-
-2.  **Run the React Frontend Dev Server (Terminal 2):**
-    ```bash
-    cd frontend
-    npm run dev
-    ```
-    The application will open automatically in your browser at `http://localhost:5173`. The Vite proxy will handle API requests.
-
----
+    -   **Terminal 2: Start the Frontend (React) Server**
+        ```bash
+        cd frontend
+        npm run dev
+        ```
+        The frontend development server will be running at `http://localhost:5173` (or another port if 5173 is busy). Open this URL in your browser.
 
 ## Deployment to Render
 
-This project is configured for a simple, single-service deployment on Render's free tier.
+This project is configured for easy deployment on Render.
 
-### Step 1: Prepare for Production
+1.  **Create a new "Web Service"** on your Render dashboard and connect your GitHub repository.
 
-Before deploying, you must create a production build of the frontend. This compiles all your React code into a static `dist` folder that Flask can serve.
+2.  **Configure the settings:**
+    -   **Root Directory:** Leave this **blank**. The `build.sh` script handles directory changes.
+    -   **Build Command:** `bash ./build.sh`
+    -   **Start Command:** `gunicorn backend.app:app`
 
-1.  **Generate `requirements.txt`:**
-    Render's build system uses this file. `pipreqs` generates it, but you must manually add `gunicorn`.
-    ```bash
-    pipreqs backend --savepath requirements.txt --force
-    # Now, open requirements.txt and add a line for gunicorn==22.0.0
-    ```
+3.  **Deploy!** Render will use the `build.sh` script to install dependencies for both the backend and frontend, build the static React files, and then use Gunicorn to start the Flask server.
 
-2.  **Build the React App:**
-    ```bash
-    cd frontend
-    npm run build
-    cd ..
-    ```
+## Project Structure
+.
 
-3.  **Commit All Changes to Git:**
-    This is the most important step. You must commit all your code, including the newly created `frontend/dist` folder.
-    ```bash
-    git add .
-    git commit -m "build: create final production build for deployment"
-    git push origin main
-    ```
+├── backend/
 
-### Step 2: Configure Render
+│ ├── data/ #mnist-dataset
 
-1.  On the Render dashboard, create a **New Web Service** and connect it to your GitHub repository.
-2.  Configure the settings with the following **exact** values. These are crucial for the deployment to work correctly.
+│ ├── data_imagenet/ #imagenet-lables
 
-    -   **Root Directory:** `backend`
-    -   **Build Command:** `pip install -r ../requirements.txt`
-    -   **Start Command:** `gunicorn --bind 0.0.0.0:$PORT app:app`
+│ ├── models/ #saved .pth file
 
-3.  Select the **Free** instance type and click **Create Web Service**.
-4.  Render will automatically deploy your application on every push to the `main` branch. After the first deployment is complete, your application will be live at the provided URL.
+│ ├── app.py #flask application
 
-## Important Considerations & What to Look Out For
+│ └── model_handler.py #model backend
 
--   **Memory Management:** The backend uses a **lazy loading** pattern for models. This is essential for the free tier, which has limited RAM. The first prediction for each model will be slow as it loads into memory. Subsequent predictions will be fast.
--   **Relative Paths are Key:** The deployment setup relies heavily on correct relative paths (`../`). The `Root Directory` is set to `backend`, so the Build Command and the model path in the code must use `../` to access files in the project root.
--   **Frontend Build is Mandatory:** For this monolithic deployment to work, you **must** run `npm run build` and commit the resulting `frontend/dist` folder to Git before deploying. If your live site is blank, it's almost certainly because the `dist` folder is missing or out of date in your repository.
--   **Input Validation:** This project assumes valid image inputs. For a real-world application, you would need to add robust server-side validation to handle incorrect file types or corrupted images.
--   **MNIST Model Specificity:** The custom MNIST model was trained on a specific format (white digits on a black background). It will perform poorly on "real-world" images of numbers. To get a correct prediction, use an image editor to create a test image in the correct format.
+│
 
-## License
+├── frontend/
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
+│ ├── public/
+
+│ └── src/ #react components and source code
+
+│
+
+├── .gitignore
+
+├── build.sh #a script for render
+
+├── README.md
+
+└── requirements.txt
+
