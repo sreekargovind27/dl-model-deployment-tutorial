@@ -98,3 +98,19 @@ This project is configured for easy deployment on Render.
 3.  **Deploy!** Render will use the `build.sh` script to install dependencies for both the backend and frontend, build the static React files, and then use Gunicorn to start the Flask server.
 
 ## Project Structure
+.
+├── backend/
+│ ├── data/ # MNIST dataset
+│ ├── data_imagenet/ # ImageNet labels
+│ ├── models/ # Saved .pth model files
+│ ├── app.py # Flask application
+│ └── model_handler.py # Model loading and prediction logic
+│
+├── frontend/
+│ ├── public/
+│ └── src/ # React components and source code
+│
+├── .gitignore
+├── build.sh # Build script for Render
+├── README.md
+└── requirements.txt # Python dependencies
