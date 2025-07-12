@@ -14,4 +14,5 @@ npm install
 echo "==> Building frontend for production..."
 npm run build
 
-echo "==> Build complete!"
+echo "==> Returning to root directory..."
+cd ..
