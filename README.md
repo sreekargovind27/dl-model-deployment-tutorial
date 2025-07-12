@@ -136,7 +136,7 @@ npm install
 cd ..
 ```
 
-### Step 6: Run the Application
+### Step 6: Run the Application locally to test
 You will need two separate terminals to run both the backend and frontend servers simultaneously.
 - Terminal 1: Start the Backend (Flask) Server
     ```bash
